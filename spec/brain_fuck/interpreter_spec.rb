@@ -1,3 +1,4 @@
+require 'brain_fuck'
 require_relative '../../lib/brain_fuck/interpreter'
 
 RSpec.describe BrainFuck::Interpreter do
@@ -7,35 +8,41 @@ RSpec.describe BrainFuck::Interpreter do
     expect(i.processor).to eq processor
   end
 
-  it '#next advances the code_ptr' do
+  it '#step ; (input integer) raises error' do
+    processor = BrainFuck::Processor.new(';', [0, 0, 0])
+    i = BrainFuck::Interpreter.new(processor)
+    expect { i.step }.to raise_error BrainFuck::Error
+  end
+
+  it '#step advances the code_ptr' do
     processor = BrainFuck::Processor.new('abc', [0, 0, 0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
     expect(processor.code_ptr).to eq 1
   end
 
-  it '#next can execute + command' do
+  it '#step can execute + command' do
     processor = BrainFuck::Processor.new('+', [0, 0, 0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
     expect(processor.data).to eq [1, 0, 0]
   end
 
-  it '#next can execute the - command' do
+  it '#step can execute the - command' do
     processor = BrainFuck::Processor.new('-', [1])
     i = BrainFuck::Interpreter.new(processor)
     i.step
     expect(processor.data).to eq [0]
   end
 
-  it '#next can exectute the > command' do
+  it '#step can exectute the > command' do
     processor = BrainFuck::Processor.new('>', [0, 0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
     expect(processor.data_ptr).to eq 1
   end
 
-  it '#next can exectute the < command' do
+  it '#step can exectute the < command' do
     processor = BrainFuck::Processor.new('><', [0, 0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
@@ -43,7 +50,7 @@ RSpec.describe BrainFuck::Interpreter do
     expect(processor.data_ptr).to eq 0
   end
 
-  it '#next can execute the . (output) command' do
+  it '#step can execute the . (output) command' do
     processor = BrainFuck::Processor.new('.', [65])
     input = StringIO.new()
     output = StringIO.new()
@@ -52,7 +59,7 @@ RSpec.describe BrainFuck::Interpreter do
     expect(output.string).to eq 'A'
   end
 
-  it '#next can execute the , (input) command' do
+  it '#step can execute the , (input) command' do
     processor = BrainFuck::Processor.new(',', [0])
     input = StringIO.new('A')
     output = StringIO.new()
@@ -61,7 +68,7 @@ RSpec.describe BrainFuck::Interpreter do
     expect(processor.data).to eq [65]
   end
 
-  it '#next can execute the : command' do
+  it '#step can execute the : command' do
     processor = BrainFuck::Processor.new(':', [123])
     input = StringIO.new()
     output = StringIO.new()
@@ -70,7 +77,7 @@ RSpec.describe BrainFuck::Interpreter do
     expect(output.string).to eq '123 '
   end
 
-  it '#next igores unknown instructions' do
+  it '#step igores unknown instructions' do
     processor = BrainFuck::Processor.new('Q+', [0, 1])
     i = BrainFuck::Interpreter.new(processor)
     i.step

@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'brain_fuck'
 
 require_relative './processor'
 require_relative './debug'
@@ -49,8 +50,8 @@ module BrainFuck
 
     private
 
-    def not_implemented(instruction)
-      raise Brainfuck::Error.new('Instruction "#{@instruction}" not implemented')
+    def not_implemented
+      raise Error.new('Instruction "#{@instruction}" not implemented')
     end
 
     def output_data_as_char
