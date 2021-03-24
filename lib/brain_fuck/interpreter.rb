@@ -1,10 +1,14 @@
-require 'scanf'
+require 'forwardable'
 
 require_relative './processor'
 require_relative './debug'
 
 module BrainFuck
   class Interpreter
+    extend Forwardable
+
+    def_delegators :@processor, :increment_data, :decrement_data, :step_back_data_ptr, :advance_data_ptr
+
     MAX_STEPS = 2000
 
     attr_reader :processor
@@ -47,22 +51,6 @@ module BrainFuck
 
     def not_implemented(instruction)
       raise Brainfuck::Error.new('Instruction "#{@instruction}" not implemented')
-    end
-
-    def increment_data
-      @processor.inc
-    end
-
-    def decrement_data
-      @processor.dec
-    end
-
-    def step_back_data_ptr
-      @processor.prev
-    end
-
-    def advance_data_ptr
-      @processor.next
     end
 
     def output_data_as_char

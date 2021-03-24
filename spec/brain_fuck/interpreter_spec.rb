@@ -1,5 +1,3 @@
-require 'scanf'
-
 require_relative '../../lib/brain_fuck/interpreter'
 
 RSpec.describe BrainFuck::Interpreter do

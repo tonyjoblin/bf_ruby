@@ -28,21 +28,21 @@ module BrainFuck
       @code_ptr >= @code.length
     end
 
-    def next
+    def advance_data_ptr
       @data_ptr += 1
       validate_data_ptr
     end
 
-    def prev
+    def step_back_data_ptr
       @data_ptr -= 1
       validate_data_ptr
     end
 
-    def inc
+    def increment_data
       @data[@data_ptr] += 1
     end
 
-    def dec
+    def decrement_data
       @data[@data_ptr] -= 1
     end
 

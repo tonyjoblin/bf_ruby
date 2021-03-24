@@ -9,28 +9,28 @@ RSpec.describe BrainFuck::Processor do
     expect(processor.data_ptr).to eq 0
   end
 
-  it '#next increases the data pointer' do
+  it '#advance_data_ptr increases the data pointer' do
     processor = BrainFuck::Processor.new('abc', [1, 2, 3])
-    processor.next
+    processor.advance_data_ptr
     expect(processor.data_ptr).to eq 1
   end
 
-  it '#prev decreases the data pointer' do
+  it '#step_back_data_ptr decreases the data pointer' do
     processor = BrainFuck::Processor.new('abc', [1, 2, 3])
-    processor.next
-    processor.prev
+    processor.advance_data_ptr
+    processor.step_back_data_ptr
     expect(processor.data_ptr).to eq 0
   end
 
-  it '#inc increases the value at the current data location' do
+  it '#increment_data increases the value at the current data location' do
     processor = BrainFuck::Processor.new('abc', [1, 2, 3])
-    processor.inc
+    processor.increment_data
     expect(processor.data).to eq [2, 2, 3]
   end
 
-  it '#dec decreases the value at the current data location' do
+  it '#decrement_data decreases the value at the current data location' do
     processor = BrainFuck::Processor.new('abc', [1, 2, 3])
-    processor.dec
+    processor.decrement_data
     expect(processor.data).to eq [0, 2, 3]
   end
 
