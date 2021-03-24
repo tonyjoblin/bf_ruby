@@ -3,6 +3,7 @@ require 'brain_fuck'
 
 require_relative './processor'
 require_relative './debug'
+require_relative './loop_instructions'
 
 module BrainFuck
   class Interpreter
@@ -67,26 +68,11 @@ module BrainFuck
     end
 
     def begin_loop
-      if @processor.get == 0
-        nested_block_count = 0
-        loop do
-          cmd = @processor.cmd
-          nested_block_count += 1 if cmd == '['
-          break if cmd == ']' && nested_block_count.zero?
-          nested_block_count -= 1 if cmd == ']'
-        end
-      end
+      LoopInstructions.new(@processor).begin_loop
     end
 
     def end_loop
-      nested_block_count = 0
-      @processor.rewind
-      loop do
-        cmd = @processor.rewind
-        nested_block_count += 1 if cmd == ']'
-        break if cmd == '[' && nested_block_count.zero?
-        nested_block_count -= 1 if cmd == '['
-      end
+      LoopInstructions.new(@processor).end_loop
     end
   end
 end
