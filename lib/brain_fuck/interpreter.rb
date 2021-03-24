@@ -73,8 +73,6 @@ module BrainFuck
           nested_block_count += 1 if cmd == '['
           break if cmd == ']' && nested_block_count.zero?
           nested_block_count -= 1 if cmd == ']'
-          raise Brainfuck::Error.new("move to end of loop failed, nested_block_count: #{nested_block_count}") if nested_block_count.negative?
-          raise Brainfuck::Error.new("move to end of loop failed, nested_block_count: #{nested_block_count}") if 10 < nested_block_count
         end
       end
     end
@@ -87,8 +85,6 @@ module BrainFuck
         nested_block_count += 1 if cmd == ']'
         break if cmd == '[' && nested_block_count.zero?
         nested_block_count -= 1 if cmd == '['
-        raise Brainfuck::Error.new("rewind to start of loop failed, nested_block_count: #{nested_block_count}") if nested_block_count.negative?
-        raise Brainfuck::Error.new("rewind to start of loop failed, nested_block_count: #{nested_block_count}") if 10 < nested_block_count
       end
     end
   end
