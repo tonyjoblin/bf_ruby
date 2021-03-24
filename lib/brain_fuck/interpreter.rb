@@ -26,9 +26,9 @@ module BrainFuck
       ';' => :not_implemented,
       '[' => :begin_loop,
       ']' => :end_loop
-    }
+    }.freeze
 
-    def initialize(processor, input = STDIN, output = STDOUT)
+    def initialize(processor, input = $stdin, output = $stdout)
       @processor = processor
       @input = input
       @output = output
@@ -37,9 +37,7 @@ module BrainFuck
     def step
       @instruction = @processor.cmd
       code = Interpreter::INSTRUCTION_SET[@instruction]
-      if code
-        send(code)
-      end
+      send(code) if code
     end
 
     def run
@@ -52,7 +50,7 @@ module BrainFuck
     private
 
     def not_implemented
-      raise Error.new('Instruction "#{@instruction}" not implemented')
+      raise Error, %(Instruction "#{@instruction}" not implemented)
     end
 
     def output_data_as_char

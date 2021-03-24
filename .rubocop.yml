@@ -1,9 +1,16 @@
+require: rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 2.4
 
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/StringLiterals:
   Enabled: true
-  EnforcedStyle: double_quotes
 
 Style/StringLiteralsInInterpolation:
   Enabled: true
@@ -11,3 +18,9 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+
+
+
+RSpec/DescribedClass:
+  Enabled: false

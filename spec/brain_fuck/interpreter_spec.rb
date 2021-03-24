@@ -52,8 +52,8 @@ RSpec.describe BrainFuck::Interpreter do
 
   it '#step can execute the . (output) command' do
     processor = BrainFuck::Processor.new('.', [65])
-    input = StringIO.new()
-    output = StringIO.new()
+    input = StringIO.new
+    output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, input, output)
     i.step
     expect(output.string).to eq 'A'
@@ -62,7 +62,7 @@ RSpec.describe BrainFuck::Interpreter do
   it '#step can execute the , (input) command' do
     processor = BrainFuck::Processor.new(',', [0])
     input = StringIO.new('A')
-    output = StringIO.new()
+    output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, input, output)
     i.step
     expect(processor.data).to eq [65]
@@ -70,8 +70,8 @@ RSpec.describe BrainFuck::Interpreter do
 
   it '#step can execute the : command' do
     processor = BrainFuck::Processor.new(':', [123])
-    input = StringIO.new()
-    output = StringIO.new()
+    input = StringIO.new
+    output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, input, output)
     i.step
     expect(output.string).to eq '123 '
@@ -138,8 +138,8 @@ RSpec.describe BrainFuck::Interpreter do
   describe '#run' do
     it '+++++: prints 5' do
       processor = BrainFuck::Processor.new('+++++:', [0])
-      input = StringIO.new()
-      output = StringIO.new()
+      input = StringIO.new
+      output = StringIO.new
       i = BrainFuck::Interpreter.new(processor, input, output)
       i.run
       expect(output.string).to eq '5 '
@@ -147,8 +147,8 @@ RSpec.describe BrainFuck::Interpreter do
 
     it 'prints !' do
       processor = BrainFuck::Processor.new('++++++++ ++++++++ ++++++++ ++++++++ +.', [0])
-      input = StringIO.new()
-      output = StringIO.new()
+      input = StringIO.new
+      output = StringIO.new
       i = BrainFuck::Interpreter.new(processor, input, output)
       i.run
       expect(output.string).to eq '!'
@@ -156,24 +156,24 @@ RSpec.describe BrainFuck::Interpreter do
 
     it 'hello world' do
       code = <<~CODE
-              ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.
-              >---.
-              +++++++.
-              .
-              +++.
-              >>.
-              <-.
-              <.
-              +++.
-              ------.
-              --------.
-              >>+.
-              >++.
-             CODE
+        ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.
+        >---.
+        +++++++.
+        .
+        +++.
+        >>.
+        <-.
+        <.
+        +++.
+        ------.
+        --------.
+        >>+.
+        >++.
+      CODE
 
       processor = BrainFuck::Processor.new(code, Array.new(20, 0))
-      input = StringIO.new()
-      output = StringIO.new()
+      input = StringIO.new
+      output = StringIO.new
       i = BrainFuck::Interpreter.new(processor, input, output)
       i.run
       expect(output.string).to eq "Hello World!\n"

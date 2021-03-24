@@ -1,7 +1,6 @@
 module BrainFuck
   class Processor
-    attr_reader :code, :code_ptr
-    attr_reader :data, :data_ptr
+    attr_reader :code, :code_ptr, :data, :data_ptr
 
     def initialize(code, data)
       @code = code
@@ -46,16 +45,16 @@ module BrainFuck
       @data[@data_ptr] -= 1
     end
 
-    def set(x)
-      @data[@data_ptr] = x
+    def set(new_data_value)
+      @data[@data_ptr] = new_data_value
     end
 
     def get
       @data[@data_ptr]
     end
 
-    def push(x)
-      @stack.push(x)
+    def push(new_stack_value)
+      @stack.push(new_stack_value)
     end
 
     def pop
@@ -65,11 +64,11 @@ module BrainFuck
     private
 
     def validate_code_ptr
-      raise BrainFuck::Error.new("Bad code_ptr #{@code_ptr}") if @code_ptr.negative? || finished?
+      raise BrainFuck::Error, "Bad code_ptr #{@code_ptr}" if @code_ptr.negative? || finished?
     end
 
     def validate_data_ptr
-      raise BrainFuck::Error.new("Bad data_ptr #{@code_ptr}") if @data_ptr.negative? || @data_ptr >= @data.length
+      raise BrainFuck::Error, "Bad data_ptr #{@code_ptr}" if @data_ptr.negative? || @data_ptr >= @data.length
     end
   end
 end
