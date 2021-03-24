@@ -7,7 +7,6 @@ module BrainFuck
     MAX_STEPS = 2000
 
     attr_reader :processor
-    attr_reader :input, :output
 
     def initialize(processor, input = STDIN, output = STDOUT)
       @processor = processor
