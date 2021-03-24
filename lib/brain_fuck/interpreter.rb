@@ -9,6 +9,19 @@ module BrainFuck
 
     attr_reader :processor
 
+    INSTRUCTION_SET = {
+      '+' => :increment_data,
+      '-' => :decrement_data,
+      '>' => :advance_data_ptr,
+      '<' => :step_back_data_ptr,
+      '.' => :output_data_as_char,
+      ',' => :input_data_from_char,
+      ':' => :output_data_as_integer,
+      ';' => :not_implemented,
+      '[' => :begin_loop,
+      ']' => :end_loop
+    }
+
     def initialize(processor, input = STDIN, output = STDOUT)
       @processor = processor
       @input = input
@@ -16,28 +29,10 @@ module BrainFuck
     end
 
     def step
-      instruction = @processor.cmd
-      case instruction
-      when '+'
-        increment_data
-      when '-'
-        decrement_data
-      when '>'
-        advance_data_ptr
-      when '<'
-        step_back_data_ptr
-      when '.'
-        output_data_as_char
-      when ','
-        input_data_from_char
-      when ':'
-        output_data_as_integer
-      when ';'
-        raise Brainfuck::Error.new('; not implemented')
-      when '['
-        begin_loop
-      when ']'
-        end_loop
+      @instruction = @processor.cmd
+      code = Interpreter::INSTRUCTION_SET[@instruction]
+      if code
+        send(code)
       end
     end
 
@@ -49,6 +44,10 @@ module BrainFuck
     end
 
     private
+
+    def not_implemented(instruction)
+      raise Brainfuck::Error.new('Instruction "#{@instruction}" not implemented')
+    end
 
     def increment_data
       @processor.inc
