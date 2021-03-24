@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'byebug'
 require "brain_fuck"
 
 RSpec.configure do |config|
