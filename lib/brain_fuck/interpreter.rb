@@ -1,6 +1,7 @@
 require 'scanf'
 
 require_relative './processor'
+require_relative './debug'
 
 module BrainFuck
   class Interpreter
@@ -64,10 +65,6 @@ module BrainFuck
         step
         break if @processor.finished?
       end
-    end
-
-    def debug
-      puts "mem: #{@processor.data} code_ptr: #{@processor.code_ptr}"
     end
   end
 end
