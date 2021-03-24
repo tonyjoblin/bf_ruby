@@ -65,7 +65,7 @@ module BrainFuck
     private
 
     def validate_code_ptr
-      raise BrainFuck::Error.new("Bad code_ptr #{@code_ptr}") if @code_ptr.negative? || self.finished?
+      raise BrainFuck::Error.new("Bad code_ptr #{@code_ptr}") if @code_ptr.negative? || finished?
     end
 
     def validate_data_ptr
