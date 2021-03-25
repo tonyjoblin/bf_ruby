@@ -8,84 +8,103 @@ RSpec.describe BrainFuck::Interpreter do
     expect(i.processor).to eq processor
   end
 
-  it '#step ; (input integer) raises error' do
+  it 'command ; (input integer) raises error' do
     processor = BrainFuck::Processor.new(';', [0, 0, 0])
     i = BrainFuck::Interpreter.new(processor)
-    expect { i.step }.to raise_error BrainFuck::Error
+    expect { i.run }.to raise_error BrainFuck::Error
   end
 
   it '#step advances the code_ptr' do
     processor = BrainFuck::Processor.new('a', [0])
     i = BrainFuck::Interpreter.new(processor)
-    i.step
+
+    i.run
+
     expect(processor.finished?).to eq true
   end
 
-  it '#step can execute + (increment_data) command' do
+  it '+ (increment_data) command increases the current data value by 1' do
     processor = BrainFuck::Processor.new('+', [0])
     i = BrainFuck::Interpreter.new(processor)
-    i.step
+
+    i.run
+
     expect(processor.get).to eq 1
   end
 
-  it '#step can execute the - (decrement_data) command' do
+  it '- (decrement_data) decreases the data value by 1' do
     processor = BrainFuck::Processor.new('-', [1])
     i = BrainFuck::Interpreter.new(processor)
-    i.step
+
+    i.run
+
     expect(processor.get).to eq 0
   end
 
-  it '#step can exectute the > (advance_data_ptr) command' do
+  it 'the > (advance_data_ptr) command increases the data pointer by 1' do
     processor = BrainFuck::Processor.new('>', [0, 1])
     i = BrainFuck::Interpreter.new(processor)
-    i.step
+
+    i.run
+
     expect(processor.get).to eq 1
   end
 
-  it '#step can exectute the < (step_back_data_ptr) command' do
+  it '< (step_back_data_ptr) command decreases the data pointer by 1' do
     processor = BrainFuck::Processor.new('><', [0, 1])
     i = BrainFuck::Interpreter.new(processor)
-    i.step
-    i.step
+
+    i.run
+
     expect(processor.get).to eq 0
   end
 
-  it '#step can execute the . (output) command' do
+  it '. (output) command outputs the current data value as a char' do
     processor = BrainFuck::Processor.new('.', [65])
     output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, $stdin, output)
-    i.step
+
+    i.run
+
     expect(output.string).to eq 'A'
   end
 
-  it '#step can execute the , (input) command' do
+  it 'the , (input) command inputs a char as integer' do
     processor = BrainFuck::Processor.new(',', [0])
     input = StringIO.new('A')
     i = BrainFuck::Interpreter.new(processor, input)
-    i.step
+
+    i.run
+
     expect(processor.get).to eq 65
   end
 
-  it '#step can execute the : command' do
+  it 'the : comman outputs the data value as integer' do
     processor = BrainFuck::Processor.new(':', [123])
     output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, $stdin, output)
-    i.step
+
+    i.run
+
     expect(output.string).to eq '123 '
   end
 
-  describe '#step igores unknown instructions' do
+  describe 'igores unknown instructions' do
     it 'moves code pointer to next instruction' do
       processor = BrainFuck::Processor.new('Q', [0])
       i = BrainFuck::Interpreter.new(processor)
-      i.step
+
+      i.run
+
       expect(processor.finished?).to eq true
     end
 
     it 'does not change the data' do
       processor = BrainFuck::Processor.new('Q', [0])
       i = BrainFuck::Interpreter.new(processor)
-      i.step
+
+      i.run
+
       expect(processor.get).to eq 0
     end
   end

@@ -3,14 +3,10 @@ require 'brain_fuck'
 
 require_relative './processor'
 require_relative './debug'
-require_relative './loop_instructions'
+require_relative './instruction_handler'
 
 module BrainFuck
   class Interpreter
-    extend Forwardable
-
-    def_delegators :@processor, :increment_data, :decrement_data, :step_back_data_ptr, :advance_data_ptr
-
     MAX_STEPS = 2000
 
     attr_reader :processor
@@ -30,14 +26,7 @@ module BrainFuck
 
     def initialize(processor, input = $stdin, output = $stdout)
       @processor = processor
-      @input = input
-      @output = output
-    end
-
-    def step
-      @instruction = @processor.cmd
-      code = Interpreter::INSTRUCTION_SET[@instruction]
-      send(code) if code
+      @instruction_handler = BrainFuck::InstructionHandler.new(@processor, input, output)
     end
 
     def run
@@ -49,28 +38,10 @@ module BrainFuck
 
     private
 
-    def not_implemented
-      raise Error, %(Instruction "#{@instruction}" not implemented)
-    end
-
-    def output_data_as_char
-      @output.putc @processor.get.chr
-    end
-
-    def input_data_from_char
-      @processor.set @input.getc.ord
-    end
-
-    def output_data_as_integer
-      @output.write "#{@processor.get} "
-    end
-
-    def begin_loop
-      LoopInstructions.new(@processor).begin_loop
-    end
-
-    def end_loop
-      LoopInstructions.new(@processor).end_loop
+    def step
+      @instruction = @processor.cmd
+      code = Interpreter::INSTRUCTION_SET[@instruction]
+      @instruction_handler.send(code) if code
     end
   end
 end
