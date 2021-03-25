@@ -15,39 +15,39 @@ RSpec.describe BrainFuck::Interpreter do
   end
 
   it '#step advances the code_ptr' do
-    processor = BrainFuck::Processor.new('abc', [0, 0, 0])
+    processor = BrainFuck::Processor.new('a', [0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
-    expect(processor.code_ptr).to eq 1
+    expect(processor.finished?).to eq true
   end
 
-  it '#step can execute + command' do
-    processor = BrainFuck::Processor.new('+', [0, 0, 0])
+  it '#step can execute + (increment_data) command' do
+    processor = BrainFuck::Processor.new('+', [0])
     i = BrainFuck::Interpreter.new(processor)
     i.step
-    expect(processor.data).to eq [1, 0, 0]
+    expect(processor.get).to eq 1
   end
 
-  it '#step can execute the - command' do
+  it '#step can execute the - (decrement_data) command' do
     processor = BrainFuck::Processor.new('-', [1])
     i = BrainFuck::Interpreter.new(processor)
     i.step
-    expect(processor.data).to eq [0]
+    expect(processor.get).to eq 0
   end
 
-  it '#step can exectute the > command' do
-    processor = BrainFuck::Processor.new('>', [0, 0])
+  it '#step can exectute the > (advance_data_ptr) command' do
+    processor = BrainFuck::Processor.new('>', [0, 1])
     i = BrainFuck::Interpreter.new(processor)
     i.step
-    expect(processor.data_ptr).to eq 1
+    expect(processor.get).to eq 1
   end
 
-  it '#step can exectute the < command' do
-    processor = BrainFuck::Processor.new('><', [0, 0])
+  it '#step can exectute the < (step_back_data_ptr) command' do
+    processor = BrainFuck::Processor.new('><', [0, 1])
     i = BrainFuck::Interpreter.new(processor)
     i.step
     i.step
-    expect(processor.data_ptr).to eq 0
+    expect(processor.get).to eq 0
   end
 
   it '#step can execute the . (output) command' do
@@ -65,7 +65,7 @@ RSpec.describe BrainFuck::Interpreter do
     output = StringIO.new
     i = BrainFuck::Interpreter.new(processor, input, output)
     i.step
-    expect(processor.data).to eq [65]
+    expect(processor.get).to eq 65
   end
 
   it '#step can execute the : command' do
@@ -77,61 +77,43 @@ RSpec.describe BrainFuck::Interpreter do
     expect(output.string).to eq '123 '
   end
 
-  it '#step igores unknown instructions' do
-    processor = BrainFuck::Processor.new('Q+', [0, 1])
-    i = BrainFuck::Interpreter.new(processor)
-    i.step
-    expect(processor.code_ptr).to eq 1
-    expect(processor.data_ptr).to eq 0
-    expect(processor.data).to eq [0, 1]
-  end
-
-  describe 'begin loop [' do
-    it 'moves to next instruction if data non zero' do
-      processor = BrainFuck::Processor.new('[+]-', [1])
+  describe '#step igores unknown instructions' do
+    it 'moves code pointer to next instruction' do
+      processor = BrainFuck::Processor.new('Q', [0])
       i = BrainFuck::Interpreter.new(processor)
       i.step
-      expect(processor.code_ptr).to eq 1
+      expect(processor.finished?).to eq true
     end
 
-    it 'moves to instruction after ] if data zero' do
-      processor = BrainFuck::Processor.new('[+]-', [0])
+    it 'does not change the data' do
+      processor = BrainFuck::Processor.new('Q', [0])
       i = BrainFuck::Interpreter.new(processor)
       i.step
-      expect(processor.code_ptr).to eq 3
-    end
-
-    it 'skips over nested loops' do
-      processor = BrainFuck::Processor.new('[[[]]]-', [0])
-      i = BrainFuck::Interpreter.new(processor)
-      i.step
-      expect(processor.code_ptr).to eq 6
+      expect(processor.get).to eq 0
     end
   end
 
-  describe 'end loop ]' do
-    it 'moves back to the begin loop instruction' do
-      processor = BrainFuck::Processor.new('[]', [1])
-      i = BrainFuck::Interpreter.new(processor)
-      expect(processor.code_ptr).to eq 0
-      i.step
-      expect(processor.code_ptr).to eq 1
-      i.step
-      expect(processor.code_ptr).to eq 0
+  describe 'loops' do
+    it 'loops until data is zero' do
+      processor = BrainFuck::Processor.new('[:-]:', [3])
+      input = StringIO.new
+      output = StringIO.new
+      i = BrainFuck::Interpreter.new(processor, input, output)
+
+      i.run
+
+      expect(output.string).to eq '3 2 1 0 '
     end
 
-    it 'moves back over nested loops' do
-      processor = BrainFuck::Processor.new('[-[]]', [1])
-      i = BrainFuck::Interpreter.new(processor)
-      expect(processor.code_ptr).to eq 0
-      i.step
-      expect(processor.code_ptr).to eq 1
-      i.step
-      expect(processor.code_ptr).to eq 2
-      i.step
-      expect(processor.code_ptr).to eq 4
-      i.step
-      expect(processor.code_ptr).to eq 0
+    it 'loops can be nested' do
+      processor = BrainFuck::Processor.new('[:->++[:-]<]:', [3, 0])
+      input = StringIO.new
+      output = StringIO.new
+      i = BrainFuck::Interpreter.new(processor, input, output)
+
+      i.run
+
+      expect(output.string).to eq '3 2 1 2 2 1 1 2 1 0 '
     end
   end
 

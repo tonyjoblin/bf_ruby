@@ -1,7 +1,5 @@
 module BrainFuck
   class Processor
-    attr_reader :code, :code_ptr, :data, :data_ptr
-
     def initialize(code, data)
       @code = code
       @code_ptr = 0
