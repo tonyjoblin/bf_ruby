@@ -21,6 +21,11 @@ Layout/LineLength:
   Max: 120
 
 
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*spec.rb'
 
 
 RSpec/DescribedClass:

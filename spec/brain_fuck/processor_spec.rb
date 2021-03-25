@@ -1,7 +1,7 @@
 require 'brain_fuck'
 require_relative '../../lib/brain_fuck/processor'
 
-RSpec.describe BrainFuck::Processor do # rubocop:disable Metrics/BlockLength
+RSpec.describe BrainFuck::Processor do
   it '#initialize accepts a code string and an initial memory array' do
     BrainFuck::Processor.new('abc', [1, 2, 3])
   end
