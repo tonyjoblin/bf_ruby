@@ -52,9 +52,8 @@ RSpec.describe BrainFuck::Interpreter do
 
   it '#step can execute the . (output) command' do
     processor = BrainFuck::Processor.new('.', [65])
-    input = StringIO.new
     output = StringIO.new
-    i = BrainFuck::Interpreter.new(processor, input, output)
+    i = BrainFuck::Interpreter.new(processor, $stdin, output)
     i.step
     expect(output.string).to eq 'A'
   end
@@ -62,17 +61,15 @@ RSpec.describe BrainFuck::Interpreter do
   it '#step can execute the , (input) command' do
     processor = BrainFuck::Processor.new(',', [0])
     input = StringIO.new('A')
-    output = StringIO.new
-    i = BrainFuck::Interpreter.new(processor, input, output)
+    i = BrainFuck::Interpreter.new(processor, input)
     i.step
     expect(processor.get).to eq 65
   end
 
   it '#step can execute the : command' do
     processor = BrainFuck::Processor.new(':', [123])
-    input = StringIO.new
     output = StringIO.new
-    i = BrainFuck::Interpreter.new(processor, input, output)
+    i = BrainFuck::Interpreter.new(processor, $stdin, output)
     i.step
     expect(output.string).to eq '123 '
   end
@@ -96,9 +93,8 @@ RSpec.describe BrainFuck::Interpreter do
   describe 'loops' do
     it 'loops until data is zero' do
       processor = BrainFuck::Processor.new('[:-]:', [3])
-      input = StringIO.new
       output = StringIO.new
-      i = BrainFuck::Interpreter.new(processor, input, output)
+      i = BrainFuck::Interpreter.new(processor, $stdin, output)
 
       i.run
 
@@ -107,9 +103,8 @@ RSpec.describe BrainFuck::Interpreter do
 
     it 'loops can be nested' do
       processor = BrainFuck::Processor.new('[:->++[:-]<]:', [3, 0])
-      input = StringIO.new
       output = StringIO.new
-      i = BrainFuck::Interpreter.new(processor, input, output)
+      i = BrainFuck::Interpreter.new(processor, $stdin, output)
 
       i.run
 
@@ -118,26 +113,8 @@ RSpec.describe BrainFuck::Interpreter do
   end
 
   describe '#run' do
-    it '+++++: prints 5' do
-      processor = BrainFuck::Processor.new('+++++:', [0])
-      input = StringIO.new
-      output = StringIO.new
-      i = BrainFuck::Interpreter.new(processor, input, output)
-      i.run
-      expect(output.string).to eq '5 '
-    end
-
-    it 'prints !' do
-      processor = BrainFuck::Processor.new('++++++++ ++++++++ ++++++++ ++++++++ +.', [0])
-      input = StringIO.new
-      output = StringIO.new
-      i = BrainFuck::Interpreter.new(processor, input, output)
-      i.run
-      expect(output.string).to eq '!'
-    end
-
-    it 'hello world' do
-      code = <<~CODE
+    let(:hello_world_program) do
+      <<~CODE
         ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.
         >---.
         +++++++.
@@ -152,11 +129,29 @@ RSpec.describe BrainFuck::Interpreter do
         >>+.
         >++.
       CODE
+        .freeze
+    end
 
-      processor = BrainFuck::Processor.new(code, Array.new(20, 0))
-      input = StringIO.new
+    it '+++++: prints 5' do
+      processor = BrainFuck::Processor.new('+++++:', [0])
       output = StringIO.new
-      i = BrainFuck::Interpreter.new(processor, input, output)
+      i = BrainFuck::Interpreter.new(processor, $stdin, output)
+      i.run
+      expect(output.string).to eq '5 '
+    end
+
+    it 'prints !' do
+      processor = BrainFuck::Processor.new('++++++++ ++++++++ ++++++++ ++++++++ +.', [0])
+      output = StringIO.new
+      i = BrainFuck::Interpreter.new(processor, $stdin, output)
+      i.run
+      expect(output.string).to eq '!'
+    end
+
+    it 'hello world' do
+      processor = BrainFuck::Processor.new(hello_world_program, Array.new(20, 0))
+      output = StringIO.new
+      i = BrainFuck::Interpreter.new(processor, $stdin, output)
       i.run
       expect(output.string).to eq "Hello World!\n"
     end
