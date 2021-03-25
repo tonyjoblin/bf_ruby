@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'brain_fuck'
+
+file_name = ARGV[0]
+raise(ArgumentError, 'brain fuck file not specified') unless file_name
+
+code = File.read(file_name)
+BrainFuck::Runner.new(code).run
