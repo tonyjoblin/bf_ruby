@@ -59,6 +59,14 @@ module BrainFuck
       @stack.pop
     end
 
+    def debug_dump_state
+      puts "code_ptr: #{@code_ptr}"
+      puts "code: #{@code}"
+      puts "data_ptr: #{@data_ptr}"
+      puts "data: #{@data}"
+      puts "stack: #{@stack}"
+    end
+
     private
 
     def validate_code_ptr

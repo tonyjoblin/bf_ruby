@@ -7,5 +7,8 @@ require 'brain_fuck/runner'
 
 module BrainFuck
   class Error < StandardError; end
-  # Your code goes here...
+
+  def self.run(code, memory_size = 100)
+    Runner.new(code, memory_size).run
+  end
 end
