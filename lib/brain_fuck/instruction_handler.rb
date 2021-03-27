@@ -31,27 +31,25 @@ module BrainFuck
     end
 
     def end_loop
-      nested_block_count = 0
       @processor.rewind
-      loop do
-        cmd = @processor.rewind
-        nested_block_count += 1 if cmd == ']'
-        break if cmd == '[' && nested_block_count.zero?
-
-        nested_block_count -= 1 if cmd == '['
-      end
+      rewind_to_start_of_loop
     end
 
     private
 
+    def rewind_to_start_of_loop
+      loop do
+        cmd = @processor.rewind
+        rewind_to_start_of_loop if cmd == ']'
+        break if cmd == '['
+      end
+    end
+
     def advance_to_end_of_loop
-      nested_block_count = 0
       loop do
         cmd = @processor.cmd
-        nested_block_count += 1 if cmd == '['
-        break if cmd == ']' && nested_block_count.zero?
-
-        nested_block_count -= 1 if cmd == ']'
+        advance_to_end_of_loop if cmd == '['
+        break if cmd == ']'
       end
     end
   end
