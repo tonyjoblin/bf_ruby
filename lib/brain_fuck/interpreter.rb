@@ -31,8 +31,9 @@ module BrainFuck
 
     def run
       (1..MAX_STEPS).each do
-        step
         break if @processor.finished?
+
+        step
       end
     end
 

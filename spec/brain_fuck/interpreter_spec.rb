@@ -174,5 +174,11 @@ RSpec.describe BrainFuck::Interpreter do
       i.run
       expect(output.string).to eq "Hello World!\n"
     end
+
+    it 'an empty program exits immediately' do
+      processor = BrainFuck::Processor.new('', [0])
+      i = BrainFuck::Interpreter.new(processor)
+      expect { i.run }.not_to raise_error
+    end
   end
 end
