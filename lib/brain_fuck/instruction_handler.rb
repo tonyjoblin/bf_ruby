@@ -27,16 +27,7 @@ module BrainFuck
     end
 
     def begin_loop
-      return if @processor.get.positive?
-
-      nested_block_count = 0
-      loop do
-        cmd = @processor.cmd
-        nested_block_count += 1 if cmd == '['
-        break if cmd == ']' && nested_block_count.zero?
-
-        nested_block_count -= 1 if cmd == ']'
-      end
+      advance_to_end_of_loop if @processor.get.zero?
     end
 
     def end_loop
@@ -48,6 +39,19 @@ module BrainFuck
         break if cmd == '[' && nested_block_count.zero?
 
         nested_block_count -= 1 if cmd == '['
+      end
+    end
+
+    private
+
+    def advance_to_end_of_loop
+      nested_block_count = 0
+      loop do
+        cmd = @processor.cmd
+        nested_block_count += 1 if cmd == '['
+        break if cmd == ']' && nested_block_count.zero?
+
+        nested_block_count -= 1 if cmd == ']'
       end
     end
   end
